@@ -6,7 +6,6 @@ package org.myorg.javafxversioninfo;
 
 import com.sun.javafx.runtime.VersionInfo;
 import java.awt.BorderLayout;
-import java.awt.Container;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.geometry.Insets;
@@ -29,25 +28,34 @@ import javax.swing.SwingUtilities;
  * @author tomo
  */
 public class SwingVersion {
-
+    public SwingVersion(){
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                initAndShowGui();
+            }
+        });
+    }
     private static void initAndShowGui() {
         JFrame jFrame = new JFrame("test");
         final JFXPanel jfxPanel = new JFXPanel();
-        jFrame.add(jfxPanel);
+        jfxPanel.setPreferredSize(new java.awt.Dimension(500, 180));
+        jFrame.setLayout(new BorderLayout());
         jFrame.setSize(500, 200);
         // JavaFX version by Swing
         String javaFxVer = VersionInfo.getRuntimeVersion();
         JLabel jLabel = new JLabel("JavaFX version(by Swing) is " + javaFxVer);
-        Container contentPane = jFrame.getContentPane();
-        contentPane.add(jLabel, BorderLayout.PAGE_START);
-        jFrame.setVisible(true);
-        jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        jFrame.add(jLabel, BorderLayout.NORTH);
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 initFX(jfxPanel);
             }
         });
+        jFrame.add(jfxPanel, BorderLayout.CENTER);
+        jFrame.pack();
+        jFrame.setVisible(true);
+        jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
     private static void initFX(JFXPanel fxpanel){
         Scene scene = createScene();
@@ -92,17 +100,10 @@ public class SwingVersion {
         final Text t3 = new Text(System.getProperty("java.version"));
         t3.setFont(Font.font(null, FontWeight.BOLD, 18));
         grid.add(t3, 1, 3);
-        return new Scene(grid, Color.ALICEBLUE);
-        
+        return new Scene(grid, Color.ALICEBLUE);        
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                initAndShowGui();
-            }
-        });
-        
+        new SwingVersion();
     }
 }
